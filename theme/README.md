@@ -24,22 +24,20 @@ preset, so it appears already composed and you edit from there.
 
 ## Color
 
-Color comes from the theme's own color scheme system, not from a private palette.
-The section applies `class="color-{{ section.settings.color_scheme }}"` to its
-wrapper — the convention Shopify documents for `color_scheme` settings — and the
-heading uses `color: inherit`, so background and text color come from whichever
-scheme the merchant picks. Change a scheme in **Theme settings → Colors** and this
-section follows.
+Both color settings default to **empty**, so out of the box the section is
+transparent and inherits the theme's page text color. That suits themes with no
+color scheme system — including **Horizon**, which this store runs.
 
-- **Color scheme** — picks from the theme's schemes. Default `scheme-1`; if a theme
-  names its schemes differently, Shopify falls back to the first defined scheme
-  rather than breaking.
-- **Text color override** — optional, leave empty to use the scheme's text color.
-- Thumbnail placeholders tint from `currentColor`, so they sit correctly on light
-  and dark schemes with nothing to configure.
+- **Text** — leave empty to inherit the theme's page text color.
+- **Background** — leave empty for a transparent background.
 
 Per **Text** block there is also an optional color, for fading the closing words
 the way the reference design does.
+
+> An earlier revision applied a `color-{{ section.settings.color_scheme }}` class
+> to inherit theme color schemes. That was reverted: Horizon 4.1.5 defines no
+> color schemes at all (it uses a `color_palette` plus explicit page colors), so
+> the class resolved to nothing and the scheme picker would have been empty.
 
 ## How a merchant composes the line
 

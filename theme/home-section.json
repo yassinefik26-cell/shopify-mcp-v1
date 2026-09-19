@@ -1,0 +1,88 @@
+{
+  "_comment": [
+    "Ready-to-apply entry for templates/index.json.",
+    "Insert the object below under \"sections\", and put its key into \"order\"",
+    "between \"customer_reviews_main\" and \"latest_articles_main\".",
+    "Requires sections/inline-image-text.liquid to be present in the theme.",
+    "Image references use shopify://shop_images/<filename>, the same form the",
+    "existing hero section uses, and all three files are already in Files."
+  ],
+
+  "inline_image_text_brand": {
+    "type": "inline-image-text",
+    "blocks": {
+      "run_1": {
+        "type": "text",
+        "settings": { "text": "Streetwear essentials" }
+      },
+      "photo_1": {
+        "type": "image",
+        "settings": {
+          "image": "shopify://shop_images/casual-urban-menswear.jpg",
+          "shape": "ellipse",
+          "size": 1.2,
+          "aspect_ratio": 1.4,
+          "gap": 0.24
+        }
+      },
+      "run_2": {
+        "type": "text",
+        "settings": { "text": "built for movement," }
+      },
+      "photo_2": {
+        "type": "image",
+        "settings": {
+          "image": "shopify://shop_images/woman-in-sports-clothes-stands-on-a-beach-in-the-morning-light.jpg",
+          "shape": "ellipse",
+          "size": 1.2,
+          "aspect_ratio": 1.4,
+          "gap": 0.24
+        }
+      },
+      "run_3": {
+        "type": "text",
+        "settings": { "text": "cut from premium fabrics" }
+      },
+      "photo_3": {
+        "type": "image",
+        "settings": {
+          "image": "shopify://shop_images/pexels-lucas-brown-368306455-15965791.jpg",
+          "shape": "ellipse",
+          "size": 1.2,
+          "aspect_ratio": 1.4,
+          "gap": 0.24
+        }
+      },
+      "run_4": {
+        "type": "text",
+        "settings": { "text": "and made to hold up" }
+      }
+    },
+    "block_order": [
+      "run_1",
+      "photo_1",
+      "run_2",
+      "photo_2",
+      "run_3",
+      "photo_3",
+      "run_4"
+    ],
+    "settings": {
+      "heading_tag": "h2",
+      "text_align": "center",
+      "balance_lines": true,
+      "max_width": 1200,
+      "horizontal_padding": 24,
+      "font_size_desktop": 60,
+      "font_size_mobile": 30,
+      "line_height": 1.7,
+      "letter_spacing": 0,
+      "font_weight": "inherit",
+      "use_body_font": false,
+      "uppercase": false,
+      "hover_effect": true,
+      "padding_top": 80,
+      "padding_bottom": 80
+    }
+  }
+}

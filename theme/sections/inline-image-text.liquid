@@ -7,9 +7,10 @@
     - "Text"  -> a run of words
     - "Image" -> a thumbnail rendered inline, on the text baseline
 
-  Color comes from the theme's color scheme system (the `color-{{ scheme.id }}`
-  class), so this inherits Analog's schemes rather than carrying its own palette.
-  Everything else is a setting. No theme CSS, JS or snippet dependencies.
+  Color is set explicitly, and both colors default to empty so the section
+  inherits the theme's page text color on a transparent background. This suits
+  themes without a color scheme system, such as Horizon.
+  No theme CSS, JS or snippet dependencies.
 
   Default proportions are measured from the reference design:
   thumbnails 1.2em wide x 1.68em tall at a 60px heading, line-height 1.7.
@@ -38,12 +39,13 @@
   }
 
   {%- comment -%}
-    The scheme class lives on this wrapper, so the padding sits inside the
-    scheme's background rather than outside it.
+    Background lives on this wrapper so the padding sits inside it. Left unset,
+    the section is transparent and picks up the theme's page background.
   {%- endcomment -%}
   #shopify-section-{{ section.id }} .inline-image-text-wrapper {
     padding-top: var(--iit-pad-top);
     padding-bottom: var(--iit-pad-bottom);
+    {% if s.background_color != blank %}background-color: {{ s.background_color }};{% endif %}
   }
 
   #shopify-section-{{ section.id }} .inline-image-text {
@@ -56,7 +58,7 @@
   {%- comment -%}
     Deliberately an inline formatting context, not flex: the thumbnails have to
     sit in the normal text flow so lines wrap around them the way words do.
-    Color is inherited from the scheme class unless the merchant overrides it.
+    Color falls back to inherit, so the theme's page text color applies.
   {%- endcomment -%}
   #shopify-section-{{ section.id }} .inline-image-text__heading {
     display: block;
@@ -65,7 +67,7 @@
     line-height: var(--iit-line-height);
     letter-spacing: var(--iit-letter-spacing);
     text-align: {{ s.text_align }};
-    {% if s.text_color_override != blank %}color: {{ s.text_color_override }};{% else %}color: inherit;{% endif %}
+    {% if s.text_color != blank %}color: {{ s.text_color }};{% else %}color: inherit;{% endif %}
     {% if s.use_body_font %}font-family: inherit;{% endif %}
     {% if s.font_weight != 'inherit' %}font-weight: {{ s.font_weight }};{% endif %}
     {% if s.uppercase %}text-transform: uppercase;{% endif %}
@@ -84,8 +86,8 @@
     vertical-align: middle;
     line-height: 0;
     box-sizing: content-box;
-    /* Tints to the current scheme's text color, so it reads correctly on a
-       light or a dark scheme without a dedicated setting. */
+    /* Tints to the current text color, so it reads correctly on a light or a
+       dark background without a dedicated setting. */
     background-color: rgba(128, 128, 128, 0.12);
     background-color: color-mix(in srgb, currentColor 12%, transparent);
   }
@@ -149,7 +151,7 @@
   {%- endfor -%}
 {%- endstyle -%}
 
-<div class="inline-image-text-wrapper color-{{ s.color_scheme }} gradient">
+<div class="inline-image-text-wrapper">
   <div class="inline-image-text">
     <{{ s.heading_tag }} class="inline-image-text__heading">
       {%- for block in section.blocks -%}
@@ -223,16 +225,16 @@
       "content": "Color"
     },
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "info": "Leave empty to inherit the theme's page text color."
     },
     {
       "type": "color",
-      "id": "text_color_override",
-      "label": "Text color override",
-      "info": "Leave empty to use the color scheme's text color."
+      "id": "background_color",
+      "label": "Background",
+      "info": "Leave empty for a transparent background that sits on the theme's page color."
     },
     {
       "type": "header",
