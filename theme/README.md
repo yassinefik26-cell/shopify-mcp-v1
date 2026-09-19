@@ -59,9 +59,9 @@ heading:
 | | Reference | Default |
 | --- | --- | --- |
 | Upright oval | 1.17em × 1.66em | 1.2em wide, height ratio 1.4 (= 1.68em) |
-| Landscape crop | 1.93em × 1.40em | 1.95em wide, height ratio 0.7 (= 1.37em) |
+| Landscape crop | 1.93em × 1.40em | 1.9em wide, height ratio 0.7 (= 1.33em) |
 | Line height | 1.72 | 1.7 |
-| Space beside a thumbnail | 0.25em | 0.24em |
+| Space beside a thumbnail | 0.25em | 0.2em |
 
 **Shape** — *Ellipse / circle* becomes a true circle when Height ratio is 1, and an
 upright oval above 1. *Rounded rectangle* and *Square* are also available, set per
@@ -98,6 +98,15 @@ readers so the sentence reads as one clean line.
 A thumbnail that is both decorative *and* linked is also removed from tab order.
 That is correct for a decorative duplicate link, but it means **a thumbnail linking
 somewhere that matters must have alt text**, or keyboard users can't reach it.
+
+## Range step constraint
+
+Shopify rejects a section schema whose range `step` or `default` has more than one
+decimal digit. All range steps here are therefore `0.1` or coarser. That is why
+thumbnail spacing defaults to `0.2em` rather than the measured `0.25em`, and why
+the preset's landscape crop is `1.9em` rather than `1.95em` (which is in fact
+closer to the measured `1.93em`). Width `1.2em` and height ratio `1.4` are
+unaffected, so the key proportions match the reference exactly.
 
 ## Notes
 

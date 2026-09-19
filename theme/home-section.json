@@ -7,13 +7,14 @@
     "Image references use shopify://shop_images/<filename>, the same form the",
     "existing hero section uses, and all three files are already in Files."
   ],
-
   "inline_image_text_brand": {
     "type": "inline-image-text",
     "blocks": {
       "run_1": {
         "type": "text",
-        "settings": { "text": "Streetwear essentials" }
+        "settings": {
+          "text": "Streetwear essentials"
+        }
       },
       "photo_1": {
         "type": "image",
@@ -22,12 +23,14 @@
           "shape": "ellipse",
           "size": 1.2,
           "aspect_ratio": 1.4,
-          "gap": 0.24
+          "gap": 0.2
         }
       },
       "run_2": {
         "type": "text",
-        "settings": { "text": "built for movement," }
+        "settings": {
+          "text": "built for movement,"
+        }
       },
       "photo_2": {
         "type": "image",
@@ -36,12 +39,14 @@
           "shape": "ellipse",
           "size": 1.2,
           "aspect_ratio": 1.4,
-          "gap": 0.24
+          "gap": 0.2
         }
       },
       "run_3": {
         "type": "text",
-        "settings": { "text": "cut from premium fabrics" }
+        "settings": {
+          "text": "cut from premium fabrics"
+        }
       },
       "photo_3": {
         "type": "image",
@@ -50,12 +55,14 @@
           "shape": "ellipse",
           "size": 1.2,
           "aspect_ratio": 1.4,
-          "gap": 0.24
+          "gap": 0.2
         }
       },
       "run_4": {
         "type": "text",
-        "settings": { "text": "and made to hold up" }
+        "settings": {
+          "text": "and made to hold up"
+        }
       }
     },
     "block_order": [
