@@ -7,8 +7,12 @@
     - "Text"  -> a run of words
     - "Image" -> a thumbnail rendered inline, on the text baseline
 
-  Every visual property is a setting, so no code edits are needed to retheme it.
-  Self-contained: no theme CSS, JS or snippet dependencies.
+  Color comes from the theme's color scheme system (the `color-{{ scheme.id }}`
+  class), so this inherits Analog's schemes rather than carrying its own palette.
+  Everything else is a setting. No theme CSS, JS or snippet dependencies.
+
+  Default proportions are measured from the reference design:
+  thumbnails 1.2em wide x 1.68em tall at a 60px heading, line-height 1.7.
 {%- endcomment -%}
 
 {%- liquid
@@ -20,14 +24,9 @@
     --iit-font-size: {{ s.font_size_mobile }}px;
     --iit-line-height: {{ s.line_height }};
     --iit-letter-spacing: {{ s.letter_spacing }}px;
-    --iit-text-color: {{ s.text_color }};
     --iit-max-width: {{ s.max_width }}px;
     --iit-pad-top: {{ s.padding_top | times: 0.6 | round }}px;
     --iit-pad-bottom: {{ s.padding_bottom | times: 0.6 | round }}px;
-
-    background-color: {{ s.background_color }};
-    padding-top: var(--iit-pad-top);
-    padding-bottom: var(--iit-pad-bottom);
   }
 
   @media screen and (min-width: 750px) {
@@ -38,6 +37,15 @@
     }
   }
 
+  {%- comment -%}
+    The scheme class lives on this wrapper, so the padding sits inside the
+    scheme's background rather than outside it.
+  {%- endcomment -%}
+  #shopify-section-{{ section.id }} .inline-image-text-wrapper {
+    padding-top: var(--iit-pad-top);
+    padding-bottom: var(--iit-pad-bottom);
+  }
+
   #shopify-section-{{ section.id }} .inline-image-text {
     max-width: var(--iit-max-width);
     margin-inline: auto;
@@ -45,24 +53,25 @@
     box-sizing: border-box;
   }
 
-  /* Deliberately an inline formatting context, not flex: the thumbnails have
-     to sit in the normal text flow so lines wrap around them like words do. */
+  {%- comment -%}
+    Deliberately an inline formatting context, not flex: the thumbnails have to
+    sit in the normal text flow so lines wrap around them the way words do.
+    Color is inherited from the scheme class unless the merchant overrides it.
+  {%- endcomment -%}
   #shopify-section-{{ section.id }} .inline-image-text__heading {
     display: block;
     margin: 0;
-    color: var(--iit-text-color);
     font-size: var(--iit-font-size);
     line-height: var(--iit-line-height);
     letter-spacing: var(--iit-letter-spacing);
     text-align: {{ s.text_align }};
+    {% if s.text_color_override != blank %}color: {{ s.text_color_override }};{% else %}color: inherit;{% endif %}
     {% if s.use_body_font %}font-family: inherit;{% endif %}
     {% if s.font_weight != 'inherit' %}font-weight: {{ s.font_weight }};{% endif %}
     {% if s.uppercase %}text-transform: uppercase;{% endif %}
-    text-wrap: balance;
+    {% if s.balance_lines %}text-wrap: balance;{% endif %}
   }
 
-  /* Text runs keep their own inner spacing; the gap either side of a
-     thumbnail is owned by the thumbnail so adjacent words never collide. */
   #shopify-section-{{ section.id }} .inline-image-text__words {
     display: inline;
     white-space: pre-wrap;
@@ -75,7 +84,10 @@
     vertical-align: middle;
     line-height: 0;
     box-sizing: content-box;
-    background-color: {{ s.placeholder_color }};
+    /* Tints to the current scheme's text color, so it reads correctly on a
+       light or a dark scheme without a dedicated setting. */
+    background-color: rgba(128, 128, 128, 0.12);
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
   }
 
   #shopify-section-{{ section.id }} .inline-image-text__media img,
@@ -87,7 +99,7 @@
   }
 
   #shopify-section-{{ section.id }} a.inline-image-text__media {
-    transition: transform 220ms ease, box-shadow 220ms ease;
+    transition: transform 220ms ease;
   }
 
   {%- if s.hover_effect -%}
@@ -107,7 +119,7 @@
     }
   }
 
-  {%- comment -%} Per-block sizing, shape and border. {%- endcomment -%}
+  {%- comment -%} Per-block geometry, shape, border and text color. {%- endcomment -%}
   {%- for block in section.blocks -%}
     {%- if block.type == 'image' -%}
       {%- liquid
@@ -129,66 +141,74 @@
           border: {{ block.settings.border_width }}px solid {{ block.settings.border_color }};
         {%- endif %}
       }
+    {%- elsif block.settings.color != blank -%}
+      #shopify-section-{{ section.id }} [data-iit-block="{{ block.id }}"] {
+        color: {{ block.settings.color }};
+      }
     {%- endif -%}
   {%- endfor -%}
 {%- endstyle -%}
 
-<div class="inline-image-text">
-  <{{ s.heading_tag }} class="inline-image-text__heading">
-    {%- for block in section.blocks -%}
-      {%- case block.type -%}
+<div class="inline-image-text-wrapper color-{{ s.color_scheme }} gradient">
+  <div class="inline-image-text">
+    <{{ s.heading_tag }} class="inline-image-text__heading">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
 
-        {%- when 'text' -%}
-          <span class="inline-image-text__words" {{ block.shopify_attributes }}>
-            {{- block.settings.text -}}
-          </span>
-
-        {%- when 'image' -%}
-          {%- liquid
-            assign image = block.settings.image
-            assign alt = block.settings.alt_text | default: image.alt
-            assign px = block.settings.size | times: s.font_size_desktop | times: 3 | round
-            if px < 120
-              assign px = 120
-            endif
-          -%}
-
-          {%- if block.settings.link != blank -%}
-            <a
-              class="inline-image-text__media"
-              data-iit-block="{{ block.id }}"
-              href="{{ block.settings.link }}"
-              {% if alt == blank %}aria-hidden="true" tabindex="-1"{% endif %}
-              {{ block.shopify_attributes }}
-            >
-          {%- else -%}
+          {%- when 'text' -%}
             <span
-              class="inline-image-text__media"
+              class="inline-image-text__words"
               data-iit-block="{{ block.id }}"
-              {% if alt == blank %}aria-hidden="true"{% endif %}
               {{ block.shopify_attributes }}
-            >
-          {%- endif -%}
+            >{{- block.settings.text -}}</span>
 
-          {%- if image != blank -%}
-            {{
-              image
-              | image_url: width: px
-              | image_tag:
-                loading: 'lazy',
-                widths: '120,180,240,360,480,720',
-                sizes: '10vw',
-                alt: alt
-            }}
-          {%- else -%}
-            {{ 'image' | placeholder_svg_tag: 'inline-image-text__placeholder' }}
-          {%- endif -%}
+          {%- when 'image' -%}
+            {%- liquid
+              assign image = block.settings.image
+              assign alt = block.settings.alt_text | default: image.alt
+              assign px = block.settings.size | times: s.font_size_desktop | times: 3 | round
+              if px < 120
+                assign px = 120
+              endif
+            -%}
 
-          {%- if block.settings.link != blank -%}</a>{%- else -%}</span>{%- endif -%}
+            {%- if block.settings.link != blank -%}
+              <a
+                class="inline-image-text__media"
+                data-iit-block="{{ block.id }}"
+                href="{{ block.settings.link }}"
+                {% if alt == blank %}aria-hidden="true" tabindex="-1"{% endif %}
+                {{ block.shopify_attributes }}
+              >
+            {%- else -%}
+              <span
+                class="inline-image-text__media"
+                data-iit-block="{{ block.id }}"
+                {% if alt == blank %}aria-hidden="true"{% endif %}
+                {{ block.shopify_attributes }}
+              >
+            {%- endif -%}
 
-      {%- endcase -%}
-    {%- endfor -%}
-  </{{ s.heading_tag }}>
+            {%- if image != blank -%}
+              {{
+                image
+                | image_url: width: px
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '120,180,240,360,480,720',
+                  sizes: '10vw',
+                  alt: alt
+              }}
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'inline-image-text__placeholder' }}
+            {%- endif -%}
+
+            {%- if block.settings.link != blank -%}</a>{%- else -%}</span>{%- endif -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+    </{{ s.heading_tag }}>
+  </div>
 </div>
 
 {% schema %}
@@ -198,6 +218,22 @@
   "class": "section-inline-image-text",
   "max_blocks": 30,
   "settings": [
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "text_color_override",
+      "label": "Text color override",
+      "info": "Leave empty to use the color scheme's text color."
+    },
     {
       "type": "header",
       "content": "Layout"
@@ -227,6 +263,13 @@
       "default": "center"
     },
     {
+      "type": "checkbox",
+      "id": "balance_lines",
+      "label": "Balance line lengths",
+      "info": "Evens out the number of words per line. Turn off if you want lines to fill fully before wrapping.",
+      "default": true
+    },
+    {
       "type": "range",
       "id": "max_width",
       "label": "Maximum width",
@@ -234,7 +277,7 @@
       "max": 1600,
       "step": 20,
       "unit": "px",
-      "default": 1000
+      "default": 1200
     },
     {
       "type": "range",
@@ -258,7 +301,7 @@
       "max": 120,
       "step": 2,
       "unit": "px",
-      "default": 56
+      "default": 60
     },
     {
       "type": "range",
@@ -274,10 +317,11 @@
       "type": "range",
       "id": "line_height",
       "label": "Line height",
+      "info": "Tall thumbnails need room. Around 1.7 matches the reference layout.",
       "min": 0.9,
-      "max": 2,
+      "max": 2.4,
       "step": 0.05,
-      "default": 1.3
+      "default": 1.7
     },
     {
       "type": "range",
@@ -314,29 +358,6 @@
       "id": "uppercase",
       "label": "Uppercase",
       "default": false
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text",
-      "default": "#1a1a1a"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "placeholder_color",
-      "label": "Thumbnail placeholder",
-      "info": "Shows behind a thumbnail while its image loads.",
-      "default": "#ebe8e3"
     },
     {
       "type": "header",
@@ -382,8 +403,14 @@
           "type": "inline_richtext",
           "id": "text",
           "label": "Text",
-          "info": "A run of words. Leading and trailing spaces are preserved, so you control the spacing around thumbnails.",
-          "default": "Made by people who"
+          "info": "A run of words. Leading and trailing spaces are preserved, so you can fine-tune spacing around thumbnails.",
+          "default": "Saltwater swimwear"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Text color",
+          "info": "Leave empty to match the rest of the line. Use it to fade the closing words, as in the reference."
         }
       ]
     },
@@ -400,54 +427,56 @@
           "type": "select",
           "id": "shape",
           "label": "Shape",
+          "info": "Ellipse becomes a perfect circle when Height ratio is 1.",
           "options": [
-            { "value": "circle", "label": "Circle" },
-            { "value": "rounded", "label": "Rounded" },
+            { "value": "ellipse", "label": "Ellipse / circle" },
+            { "value": "rounded", "label": "Rounded rectangle" },
             { "value": "square", "label": "Square" }
           ],
-          "default": "circle"
+          "default": "ellipse"
         },
         {
           "type": "range",
           "id": "corner_radius",
           "label": "Corner radius",
-          "info": "Applies to the Rounded shape only.",
+          "info": "Applies to the Rounded rectangle shape only.",
           "min": 0,
           "max": 40,
           "step": 2,
           "unit": "px",
-          "default": 10
+          "default": 12
         },
         {
           "type": "range",
           "id": "size",
-          "label": "Size",
+          "label": "Width",
           "info": "Relative to the text, so thumbnails scale with the font size.",
           "min": 0.5,
           "max": 2.5,
           "step": 0.05,
           "unit": "em",
-          "default": 1.1
+          "default": 1.2
         },
         {
           "type": "range",
           "id": "aspect_ratio",
           "label": "Height ratio",
-          "info": "1 is a perfect circle or square. Above 1 makes a tall pill, below 1 a wide one.",
+          "info": "Height as a multiple of width. 1.4 is the upright oval in the reference; 0.7 gives a wide landscape crop.",
           "min": 0.5,
           "max": 2,
           "step": 0.05,
-          "default": 1
+          "default": 1.4
         },
         {
           "type": "range",
           "id": "gap",
           "label": "Space on each side",
+          "info": "0.24em matches the reference, roughly one word-space either side.",
           "min": 0,
           "max": 0.8,
           "step": 0.02,
           "unit": "em",
-          "default": 0.18
+          "default": 0.24
         },
         {
           "type": "range",
@@ -457,7 +486,6 @@
           "min": -0.4,
           "max": 0.4,
           "step": 0.02,
-          "unit": "em",
           "default": 0
         },
         {
@@ -485,7 +513,7 @@
           "type": "text",
           "id": "alt_text",
           "label": "Alt text",
-          "info": "Leave empty if the thumbnail is decorative. It is then hidden from screen readers so the sentence still reads cleanly."
+          "info": "Leave empty if the thumbnail is decorative. It is then hidden from screen readers so the sentence still reads cleanly. A linked thumbnail with no alt text is also skipped by keyboard navigation, so give any thumbnail that links somewhere useful a description."
         }
       ]
     }
@@ -494,11 +522,17 @@
     {
       "name": "Inline image text",
       "blocks": [
-        { "type": "text", "settings": { "text": "Everyday essentials" } },
+        { "type": "text", "settings": { "text": "Saltwater swimwear" } },
         { "type": "image" },
-        { "type": "text", "settings": { "text": "built to last, shipped" } },
+        { "type": "text", "settings": { "text": "with a secure fit" } },
         { "type": "image" },
-        { "type": "text", "settings": { "text": "worldwide." } }
+        { "type": "text", "settings": { "text": "soft recycled fabrics" } },
+        { "type": "image" },
+        { "type": "text", "settings": { "text": "and freedom of movement" } },
+        {
+          "type": "image",
+          "settings": { "shape": "rounded", "size": 1.95, "aspect_ratio": 0.7 }
+        }
       ]
     }
   ]
