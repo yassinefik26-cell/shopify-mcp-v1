@@ -99,8 +99,7 @@
         "type": "text",
         "settings": {
           "text": "Made to move with you"
-        },
-        "blocks": {}
+        }
       },
       "photo_1": {
         "type": "image",
@@ -110,15 +109,13 @@
           "size": 1.2,
           "aspect_ratio": 1.4,
           "gap": 0.2
-        },
-        "blocks": {}
+        }
       },
       "run_2": {
         "type": "text",
         "settings": {
           "text": "from the block"
-        },
-        "blocks": {}
+        }
       },
       "photo_2": {
         "type": "image",
@@ -128,15 +125,13 @@
           "size": 1.2,
           "aspect_ratio": 1.4,
           "gap": 0.2
-        },
-        "blocks": {}
+        }
       },
       "run_3": {
         "type": "text",
         "settings": {
           "text": "to the studio"
-        },
-        "blocks": {}
+        }
       },
       "photo_3": {
         "type": "image",
@@ -146,15 +141,13 @@
           "size": 1.9,
           "aspect_ratio": 0.7,
           "gap": 0.2
-        },
-        "blocks": {}
+        }
       },
       "run_4": {
         "type": "text",
         "settings": {
           "text": "and everywhere"
-        },
-        "blocks": {}
+        }
       },
       "photo_4": {
         "type": "image",
@@ -164,13 +157,37 @@
           "size": 1.2,
           "aspect_ratio": 1.4,
           "gap": 0.2
-        },
-        "blocks": {}
+        }
       },
       "run_5": {
         "type": "text",
         "settings": {
-          "text": "the day takes you."
+          "text": "the ",
+          "color": "#3b3e42"
+        },
+        "blocks": {}
+      },
+      "run_6": {
+        "type": "text",
+        "settings": {
+          "text": "day ",
+          "color": "#494c50"
+        },
+        "blocks": {}
+      },
+      "run_7": {
+        "type": "text",
+        "settings": {
+          "text": "takes ",
+          "color": "#5a5c60"
+        },
+        "blocks": {}
+      },
+      "run_8": {
+        "type": "text",
+        "settings": {
+          "text": "you.",
+          "color": "#6e7073"
         },
         "blocks": {}
       }
@@ -184,7 +201,10 @@
       "photo_3",
       "run_4",
       "photo_4",
-      "run_5"
+      "run_5",
+      "run_6",
+      "run_7",
+      "run_8"
     ],
     "name": "Inline image text (movement)",
     "settings": {

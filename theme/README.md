@@ -31,8 +31,20 @@ color scheme system — including **Horizon**, which this store runs.
 - **Text** — leave empty to inherit the theme's page text color.
 - **Background** — leave empty for a transparent background.
 
-Per **Text** block there is also an optional color, for fading the closing words
-the way the reference design does.
+Per **Text** block there is also an optional color. The reference design uses it
+for a **progressive fade**: rather than one lighter grey, each of the closing words
+steps lighter than the last. Sampled from the reference, on its `#2b2e33` body text:
+
+| word | colour |
+| --- | --- |
+| the | `#3b3e42` |
+| day | `#494c50` |
+| takes | `#5a5c60` |
+| you | `#6e7073` |
+
+To reproduce it, split the closing sentence into one Text block per word and set
+each one a step lighter. These are light-background values; on a dark background
+you want the steps to run the other way, toward the background colour.
 
 > An earlier revision applied a `color-{{ section.settings.color_scheme }}` class
 > to inherit theme color schemes. That was reverted: Horizon 4.1.5 defines no
