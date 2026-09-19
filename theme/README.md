@@ -104,9 +104,9 @@ somewhere that matters must have alt text**, or keyboard users can't reach it.
 - Built as an inline formatting context, **not** flexbox. Flex would make each text
   run an unbreakable item and stop the line wrapping around thumbnails.
 - CSS is scoped to `#shopify-section-{{ section.id }}`, so two instances on one page
-  can't collide. No dependency on theme CSS, JS or snippets beyond the scheme class.
+  can't collide. No dependency on theme CSS, JS or snippets.
 - Images are served responsively (`srcset` 120–720px, `loading="lazy"`).
 - `prefers-reduced-motion` disables the hover transition.
 - Verified: schema JSON, every setting type, range step and preset value checked
-  programmatically; rendered at 1900px, 1280px and 390px; scheme inheritance
-  confirmed against a simulated light and dark theme scheme.
+  programmatically; rendered at 1900px, 1280px and 390px; the
+  `theme/home-section.json` patch validated against the section's own schema.
