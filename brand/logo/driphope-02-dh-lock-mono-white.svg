@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="DRIPHOPE DH Lock">
+  <path d="M32 40 H64 V216 H32 Z" fill="#FFFFFF"/>
+  <path d="M104 40 H140 A88 88 0 0 1 140 216 H104 Z M140 84 A44 44 0 0 1 140 172 Z" fill="#FFFFFF" fill-rule="evenodd"/>
+  <path d="M32 112 H140 V144 H32 Z" fill="#FFFFFF"/>
+</svg>

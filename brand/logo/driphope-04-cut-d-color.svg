@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="DRIPHOPE Cut D">
+  <defs>
+    <clipPath id="cutTop"><rect x="0" y="0" width="256" height="114"/></clipPath>
+    <clipPath id="cutBot"><rect x="0" y="146" width="256" height="110"/></clipPath>
+  </defs>
+  <g clip-path="url(#cutTop)"><path d="M44 32 H124 A96 96 0 0 1 124 224 H44 Z M88 78 H124 A50 50 0 0 1 124 178 H88 Z" fill="#FFFFFF" fill-rule="evenodd"/></g>
+  <g clip-path="url(#cutBot)"><g transform="translate(16,0)"><path d="M44 32 H124 A96 96 0 0 1 124 224 H44 Z M88 78 H124 A50 50 0 0 1 124 178 H88 Z" fill="#FFFFFF" fill-rule="evenodd"/></g></g>
+  <rect x="44" y="114" width="186" height="32" fill="#E3242B"/>
+</svg>
