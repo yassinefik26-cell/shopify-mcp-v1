@@ -1,0 +1,84 @@
+{%- doc -%}
+  Shared size guide tables. This is the single source of truth for every
+  measurement shown on the storefront - edit the rows here and all product
+  pages update at once.
+
+  @param system {String} - 'letter' for XS-XXL apparel, 'denim' for waist-sized jeans.
+
+  @example
+  {% render 'size-guide-tables', system: 'letter' %}
+{%- enddoc -%}
+
+{%- if system == 'denim' -%}
+  <div class="size-guide__scroll" tabindex="0" role="region" aria-label="Denim size chart">
+    <table class="size-guide__table">
+      <thead>
+        <tr>
+          <th scope="col">Size</th>
+          <th scope="col">Waist (in)</th>
+          <th scope="col">Waist (cm)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">28</th><td>28"</td><td>71</td></tr>
+        <tr><th scope="row">30</th><td>30"</td><td>76</td></tr>
+        <tr><th scope="row">32</th><td>32"</td><td>81</td></tr>
+        <tr><th scope="row">34</th><td>34"</td><td>86</td></tr>
+        <tr><th scope="row">36</th><td>36"</td><td>91</td></tr>
+        <tr><th scope="row">38</th><td>38"</td><td>97</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="size-guide__note">
+    Each waist comes in three leg lengths &mdash; <strong>S</strong> (Short),
+    <strong>R</strong> (Regular) and <strong>L</strong> (Long). Choose the waist
+    that matches your measurement, then the leg length you prefer. For example
+    <strong>32R</strong> is a 32&quot; waist with a regular leg.
+  </p>
+
+  <h3 class="size-guide__subheading">How to measure</h3>
+  <dl class="size-guide__how">
+    <dt>Waist</dt>
+    <dd>Measure around your natural waistline, where you normally wear your jeans.</dd>
+    <dt>Inside leg</dt>
+    <dd>Measure from the top of your inner thigh down to your ankle.</dd>
+  </dl>
+{%- else -%}
+  <div class="size-guide__scroll" tabindex="0" role="region" aria-label="Size chart">
+    <table class="size-guide__table">
+      <thead>
+        <tr>
+          <th scope="col">Size</th>
+          <th scope="col">EU Size</th>
+          <th scope="col">Chest (cm)</th>
+          <th scope="col">Waist (cm)</th>
+          <th scope="col">Hips (cm)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">XS</th><td>38</td><td>78&ndash;82</td><td>60&ndash;64</td><td>86&ndash;90</td></tr>
+        <tr><th scope="row">S</th><td>40</td><td>82&ndash;86</td><td>64&ndash;68</td><td>90&ndash;94</td></tr>
+        <tr><th scope="row">M</th><td>42</td><td>86&ndash;90</td><td>68&ndash;72</td><td>94&ndash;98</td></tr>
+        <tr><th scope="row">L</th><td>44</td><td>90&ndash;96</td><td>72&ndash;78</td><td>98&ndash;104</td></tr>
+        <tr><th scope="row">XL</th><td>46</td><td>96&ndash;102</td><td>78&ndash;84</td><td>104&ndash;110</td></tr>
+        <tr><th scope="row">XXL</th><td>48</td><td>102&ndash;108</td><td>84&ndash;90</td><td>110&ndash;116</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="size-guide__note">
+    All measurements are body measurements in centimetres, not garment
+    measurements. If you are between two sizes, we recommend sizing up.
+  </p>
+
+  <h3 class="size-guide__subheading">How to measure</h3>
+  <dl class="size-guide__how">
+    <dt>Chest</dt>
+    <dd>Measure around the fullest part of your chest, keeping the tape level under your arms.</dd>
+    <dt>Waist</dt>
+    <dd>Measure around your natural waistline, keeping the tape comfortably loose.</dd>
+    <dt>Hips</dt>
+    <dd>Measure around the fullest part of your hips.</dd>
+  </dl>
+{%- endif -%}
