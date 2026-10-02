@@ -84,10 +84,9 @@ are edited as plain text rather than HTML. A per-product `custom.size_chart`
 metafield overrides the chart for that product, which is how a different product
 category gets a different chart.
 
-> **The delivery window is a deliberate placeholder.** The shipping text reads
-> "delivered in [X–Y] business days" and renders exactly that, brackets included.
-> This is intentional, set by the merchant so the gap is visible until the real
-> window is known. Fill it in from the theme editor before this goes live.
+The shipping text reads "delivered in 2–4 business days", set by the merchant.
+It is the same on every product and lives in the block setting, so changing the
+window is one edit in the theme editor rather than a per-product change.
 
 ## Size guide link
 
