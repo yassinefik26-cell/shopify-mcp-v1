@@ -1,0 +1,650 @@
+{%- liquid
+  assign bs = block.settings
+  assign product_resource = closest.product
+
+  # --- composition + care come from per-product metafields ---
+  assign composition_raw = product_resource.metafields.custom.composition.value | default: ''
+  assign care_raw = product_resource.metafields.custom.care_instructions.value | default: ''
+
+  assign composition_lines = composition_raw | strip | newline_to_br | split: '<br />'
+  assign care_lines = care_raw | strip | newline_to_br | split: '<br />'
+
+  # --- size chart: per-product metafield wins, otherwise the block setting ---
+  assign chart_raw = bs.size_chart
+  assign chart_override = product_resource.metafields.custom.size_chart.value | default: ''
+  if chart_override != blank
+    assign chart_raw = chart_override
+  endif
+  assign chart_lines = chart_raw | strip | newline_to_br | split: '<br />'
+
+  assign measure_lines = bs.measure_items | strip | newline_to_br | split: '<br />'
+-%}
+
+<div
+  class="pinfo spacing-style"
+  style="{% render 'spacing-style', settings: bs %}"
+  {{ block.shopify_attributes }}
+>
+  {%- if composition_raw != blank -%}
+    <div class="pinfo__lead">
+      <h2 class="pinfo__lead-title">{{ bs.composition_heading }}</h2>
+      <ul class="pinfo__list">
+        {%- for line in composition_lines -%}
+          {%- assign item = line | strip -%}
+          {%- if item != blank -%}
+            <li>{{ item }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="pinfo__rows">
+    {%- if composition_raw != blank or care_raw != blank -%}
+      <details class="pinfo__row">
+        <summary class="pinfo__summary">
+          <svg class="pinfo__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M3.5 9.5h17l-1.6 8.1a2 2 0 0 1-2 1.6H7.1a2 2 0 0 1-2-1.6L3.5 9.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M7.5 9.5V6.8a1.8 1.8 0 0 1 3-1.3l.6.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <span class="pinfo__label">{{ bs.care_heading }}</span>
+          {%- render 'pinfo-chevron' -%}
+        </summary>
+        <div class="pinfo__panel">
+          {%- if composition_raw != blank -%}
+            <h3 class="pinfo__subheading">{{ bs.composition_heading }}</h3>
+            <ul class="pinfo__list">
+              {%- for line in composition_lines -%}
+                {%- assign item = line | strip -%}
+                {%- if item != blank -%}<li>{{ item }}</li>{%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          {%- if care_raw != blank -%}
+            <h3 class="pinfo__subheading">{{ bs.care_subheading }}</h3>
+            <ul class="pinfo__list">
+              {%- for line in care_lines -%}
+                {%- assign item = line | strip -%}
+                {%- if item != blank -%}<li>{{ item }}</li>{%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      </details>
+    {%- endif -%}
+
+    <details class="pinfo__row">
+      <summary class="pinfo__summary">
+        <svg class="pinfo__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M3.2 15.3 15.3 3.2a1 1 0 0 1 1.4 0l4.1 4.1a1 1 0 0 1 0 1.4L8.7 20.8a1 1 0 0 1-1.4 0l-4.1-4.1a1 1 0 0 1 0-1.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M8.1 10.4 10 12.3M11.1 7.4 13 9.3M14.1 4.4 16 6.3M5.1 13.4 7 15.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span class="pinfo__label">{{ bs.fit_heading }}</span>
+        {%- render 'pinfo-chevron' -%}
+      </summary>
+      <div class="pinfo__panel">
+        {%- if bs.fit_intro != blank -%}
+          <div class="pinfo__rte">{{ bs.fit_intro }}</div>
+        {%- endif -%}
+
+        {%- if chart_lines.size > 1 -%}
+          <div class="pinfo__scroll" tabindex="0" role="region" aria-label="{{ bs.fit_heading | escape }}">
+            <table class="pinfo__table">
+              <thead>
+                <tr>
+                  {%- assign head_cells = chart_lines[0] | strip | split: '|' -%}
+                  {%- for cell in head_cells -%}
+                    <th scope="col">{{ cell | strip }}</th>
+                  {%- endfor -%}
+                </tr>
+              </thead>
+              <tbody>
+                {%- for line in chart_lines offset: 1 -%}
+                  {%- assign row = line | strip -%}
+                  {%- if row != blank -%}
+                    {%- assign cells = row | split: '|' -%}
+                    <tr>
+                      {%- for cell in cells -%}
+                        {%- if forloop.first -%}
+                          <th scope="row">{{ cell | strip }}</th>
+                        {%- else -%}
+                          <td>{{ cell | strip }}</td>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </tr>
+                  {%- endif -%}
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+        {%- endif -%}
+
+        {%- if measure_lines.size > 0 and bs.measure_items != blank -%}
+          <h3 class="pinfo__subheading">{{ bs.measure_heading }}</h3>
+          <ul class="pinfo__list">
+            {%- for line in measure_lines -%}
+              {%- assign item = line | strip -%}
+              {%- if item != blank -%}
+                {%- assign parts = item | split: '|' -%}
+                <li>
+                  {%- if parts.size > 1 -%}
+                    <strong>{{ parts[0] | strip }}</strong> &mdash; {{ parts[1] | strip }}
+                  {%- else -%}
+                    {{ item }}
+                  {%- endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        {%- if bs.fit_note != blank -%}
+          <h3 class="pinfo__subheading">{{ bs.fit_note_heading }}</h3>
+          <div class="pinfo__rte">{{ bs.fit_note }}</div>
+        {%- endif -%}
+      </div>
+    </details>
+
+    {%- if bs.shipping_text != blank -%}
+      <details class="pinfo__row">
+        <summary class="pinfo__summary">
+          <svg class="pinfo__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M2.8 6.2h10.4v9.6H2.8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M13.2 9.4h3.6l3.4 3v3.4h-7V9.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <circle cx="6.6" cy="17.6" r="1.8" stroke="currentColor" stroke-width="1.3"/>
+            <circle cx="16.8" cy="17.6" r="1.8" stroke="currentColor" stroke-width="1.3"/>
+          </svg>
+          <span class="pinfo__label">{{ bs.shipping_heading }}</span>
+          {%- render 'pinfo-chevron' -%}
+        </summary>
+        <div class="pinfo__panel">
+          <div class="pinfo__rte">{{ bs.shipping_text }}</div>
+        </div>
+      </details>
+    {%- endif -%}
+  </div>
+
+  {%- if bs.show_share -%}
+    <button
+      type="button"
+      class="pinfo__share"
+      data-pinfo-share
+      data-share-title="{{ product_resource.title | escape }}"
+      data-share-url="{{ shop.url }}{{ product_resource.url }}"
+      data-copied-label="{{ bs.share_copied_label | escape }}"
+    >
+      <svg class="pinfo__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M12 15.5V3.8M12 3.8 8.2 7.6M12 3.8l3.8 3.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4.8 13.5v4.9a1.8 1.8 0 0 0 1.8 1.8h10.8a1.8 1.8 0 0 0 1.8-1.8v-4.9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span data-pinfo-share-label>{{ bs.share_label }}</span>
+    </button>
+  {%- endif -%}
+
+  {%- if bs.show_trust -%}
+    <div class="pinfo__trust">
+      <svg class="pinfo__trust-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="M5.8 10.4h12.4v9.2H5.8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+        <path d="M8.6 10.4V7.6a3.4 3.4 0 0 1 6.8 0v2.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <div class="pinfo__trust-body">
+        <p class="pinfo__trust-title">{{ bs.trust_title }}</p>
+        <p class="pinfo__trust-text">{{ bs.trust_text }}</p>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  (() => {
+    // Bind every unbound share button, so the block keeps working if the
+    // section re-renders (variant change) or appears more than once.
+    document.querySelectorAll('[data-pinfo-share]:not([data-pinfo-bound])').forEach((btn) => {
+    btn.setAttribute('data-pinfo-bound', '');
+    const label = btn.querySelector('[data-pinfo-share-label]');
+    const original = label ? label.textContent : '';
+    btn.addEventListener('click', async () => {
+      const url = btn.dataset.shareUrl;
+      const title = btn.dataset.shareTitle;
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, url });
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        if (label) {
+          label.textContent = btn.dataset.copiedLabel || 'Link copied';
+          setTimeout(() => { label.textContent = original; }, 2000);
+        }
+      } catch (err) {
+        window.prompt('Copy this link', url);
+      }
+    });
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .pinfo {
+    display: block;
+    width: 100%;
+  }
+
+  .pinfo__lead {
+    margin-block-end: 1.5rem;
+  }
+
+  .pinfo__lead-title {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .pinfo__list {
+    margin: 0;
+    padding-inline-start: 1.1rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .pinfo__list li {
+    margin-block-end: 0.3rem;
+  }
+
+  .pinfo__list li:last-child {
+    margin-block-end: 0;
+  }
+
+  /* --- accordion rows: thin rules above each row and below the last --- */
+  .pinfo__rows {
+    border-block-start: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  }
+
+  .pinfo__row {
+    border-block-end: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  }
+
+  .pinfo__summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding-block: 1.125rem;
+    list-style: none;
+  }
+
+  .pinfo__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .pinfo__summary:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  .pinfo__icon {
+    flex-shrink: 0;
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .pinfo__label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .pinfo__chevron {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+    width: 0.875rem;
+    height: 0.875rem;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .pinfo__row[open] .pinfo__chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pinfo__chevron {
+      transition: none;
+    }
+  }
+
+  .pinfo__panel {
+    padding-block-end: 1.375rem;
+    padding-inline-start: 2.125rem;
+  }
+
+  .pinfo__rte {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .pinfo__rte p {
+    margin: 0 0 0.75rem;
+  }
+
+  .pinfo__rte p:last-child {
+    margin-block-end: 0;
+  }
+
+  .pinfo__subheading {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .pinfo__panel > .pinfo__subheading:first-child {
+    margin-block-start: 0;
+  }
+
+  /* The chart scrolls rather than shrinking its type on narrow screens. */
+  .pinfo__scroll {
+    margin-block-start: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pinfo__table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pinfo__table th,
+  .pinfo__table td {
+    border-block-end: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    padding: 0.5rem 0.75rem 0.5rem 0;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .pinfo__table th:last-child,
+  .pinfo__table td:last-child {
+    padding-inline-end: 0;
+  }
+
+  .pinfo__table thead th {
+    border-block-end-color: color-mix(in srgb, currentColor 38%, transparent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .pinfo__table tbody th {
+    font-weight: 600;
+  }
+
+  .pinfo__table tbody tr:last-child th,
+  .pinfo__table tbody tr:last-child td {
+    border-block-end: none;
+  }
+
+  .pinfo__share {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-block-start: 1.25rem;
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .pinfo__share:hover,
+  .pinfo__share:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .pinfo__trust {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-block-start: 1.5rem;
+    background-color: #000;
+    padding: 1.125rem 1.25rem;
+    color: #fff;
+  }
+
+  .pinfo__trust-icon {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .pinfo__trust-body {
+    min-width: 0;
+  }
+
+  .pinfo__trust-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .pinfo__trust-text {
+    margin: 0.15rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 749px) {
+    .pinfo__panel {
+      padding-inline-start: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product info",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Composition and care text comes from each product's metafields: custom.composition and custom.care_instructions. Rows with no content are hidden automatically."
+    },
+    {
+      "type": "header",
+      "content": "Composition"
+    },
+    {
+      "type": "text",
+      "id": "composition_heading",
+      "label": "Composition heading",
+      "default": "Composition"
+    },
+    {
+      "type": "text",
+      "id": "care_heading",
+      "label": "Row title",
+      "default": "Composition & care"
+    },
+    {
+      "type": "text",
+      "id": "care_subheading",
+      "label": "Care subheading",
+      "default": "Care"
+    },
+    {
+      "type": "header",
+      "content": "Fit & sizes"
+    },
+    {
+      "type": "text",
+      "id": "fit_heading",
+      "label": "Row title",
+      "default": "Fit & sizes"
+    },
+    {
+      "type": "richtext",
+      "id": "fit_intro",
+      "label": "Intro text",
+      "default": "<p>Tight, second-skin fit. All measurements are in centimeters and refer to the body, not the garment. If you're between two sizes, choose the larger one for a more comfortable fit.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "size_chart",
+      "label": "Size chart",
+      "info": "One row per line, columns separated by | . The first line is the header row. A product's custom.size_chart metafield overrides this for that product only.",
+      "default": "Size|IT|Bust|Waist|Hips\nXS|38|78–82|60–64|86–90\nS|40|82–86|64–68|90–94\nM|42|86–90|68–72|94–98\nL|44|90–96|72–78|98–104\nXL|46|96–102|78–84|104–110\nXXL|48|102–108|84–90|110–116"
+    },
+    {
+      "type": "text",
+      "id": "measure_heading",
+      "label": "Measuring subheading",
+      "default": "How to measure"
+    },
+    {
+      "type": "textarea",
+      "id": "measure_items",
+      "label": "How to measure",
+      "info": "One per line, as Label|description",
+      "default": "Bust|at the fullest point, keeping the tape parallel to the floor.\nWaist|at the narrowest point, above the belly button.\nHips|at the fullest point, about 20 cm below the waist."
+    },
+    {
+      "type": "text",
+      "id": "fit_note_heading",
+      "label": "Fit subheading",
+      "default": "Fit"
+    },
+    {
+      "type": "richtext",
+      "id": "fit_note",
+      "label": "Fit text",
+      "default": "<p>Sports bras and leggings have a tight, second-skin fit. Tops and tank tops have a regular fit.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Shipping & returns"
+    },
+    {
+      "type": "text",
+      "id": "shipping_heading",
+      "label": "Row title",
+      "default": "Shipping & returns"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text",
+      "label": "Shipping text",
+      "info": "Same on every product. Set your real delivery window here.",
+      "default": "<p>Free shipping on all orders, delivered in 2–4 business days. You have 30 days to return your order with free returns. Your legal right of withdrawal remains guaranteed.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Share"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "share_label",
+      "label": "Share label",
+      "default": "Share"
+    },
+    {
+      "type": "text",
+      "id": "share_copied_label",
+      "label": "Copied confirmation",
+      "default": "Link copied"
+    },
+    {
+      "type": "header",
+      "content": "Secure payments block"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show block",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_title",
+      "label": "Title",
+      "default": "Secure payments"
+    },
+    {
+      "type": "text",
+      "id": "trust_text",
+      "label": "Text",
+      "default": "Card, PayPal and pay in 3 installments."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "Left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "Right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product info"
+    }
+  ]
+}
+{% endschema %}
