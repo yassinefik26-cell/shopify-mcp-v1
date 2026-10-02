@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="DRIPHOPE Hard Drip">
+  <defs><mask id="dripcut">
+    <rect width="256" height="256" fill="#FFFFFF"/>
+    <rect x="48" y="150" width="160" height="26" fill="#000000"/>
+  </mask></defs>
+  <g mask="url(#dripcut)">
+    <path d="M128 24 L60 140 V168 L88 210 H128 Z" fill="#FFFFFF"/>
+    <path d="M128 24 L196 140 V168 L168 210 H128 Z" fill="#FFFFFF"/>
+  </g>
+</svg>
