@@ -5,9 +5,11 @@ summary, three accordion rows with icons, a share button and a dark secure-payme
 block.
 
 ```
-blocks/product-info.liquid      the block: markup, styles, settings
-snippets/pinfo-chevron.liquid   the chevron that rotates when a row opens
-templates/product.json          the default product template, with the block added
+blocks/product-info.liquid        the block: markup, styles, settings
+blocks/variant-picker.liquid      one line added, to render the size guide link
+snippets/pinfo-chevron.liquid     the chevron that rotates when a row opens
+snippets/size-guide-jump.liquid   the "Size guide" link under the size selector
+templates/product.json            the default product template, with the block added
 ```
 
 Built for **Horizon 4.x** on `driphope.com`. Native `<details>`/`<summary>`, so the
@@ -82,10 +84,27 @@ are edited as plain text rather than HTML. A per-product `custom.size_chart`
 metafield overrides the chart for that product, which is how a different product
 category gets a different chart.
 
-> **The delivery window is a placeholder.** The shipping text ships with
-> "delivered in 2–4 business days". That number was not supplied — it was filled in
-> because a literal `[X–Y]` would render on the storefront. Set the real window in
-> the theme editor.
+> **The delivery window is a deliberate placeholder.** The shipping text reads
+> "delivered in [X–Y] business days" and renders exactly that, brackets included.
+> This is intentional, set by the merchant so the gap is visible until the real
+> window is known. Fill it in from the theme editor before this goes live.
+
+## Size guide link
+
+A small "Size guide" link sits under the size selector. It scrolls to the
+**Fit & sizes** row and opens it, rather than opening a separate modal, so the
+chart exists in exactly one place.
+
+It is a real `<a href="#SizeGuideTarget-{id}">`, so without JavaScript it still
+jumps to the row; the script adds `open`, smooth scrolling and focus. The scroll
+is instant under `prefers-reduced-motion`, and focus moves to the row's summary so
+keyboard and screen reader users land there too, not just sighted ones.
+
+The link and the row share one visibility rule, so they can never disagree: both
+check the product's **Size** option and disappear on products with no sizes or a
+single "One Size" value. That stops a backpack showing a bust/waist/hips chart.
+Reverting that is one condition — drop `{%- if has_sizes -%}` around the
+Fit & sizes row in `blocks/product-info.liquid`.
 
 ## Implementation notes
 

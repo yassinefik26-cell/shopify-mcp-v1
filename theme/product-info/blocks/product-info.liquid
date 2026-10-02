@@ -18,6 +18,22 @@
   assign chart_lines = chart_raw | strip | newline_to_br | split: '<br />'
 
   assign measure_lines = bs.measure_items | strip | newline_to_br | split: '<br />'
+
+  # A size chart only applies to a product that has real sizes. Products with no
+  # size option, or a single "One Size" value, skip the Fit & sizes row entirely
+  # rather than showing body measurements for something like a backpack.
+  assign size_values = ''
+  for product_option in product_resource.options_with_values
+    assign option_name = product_option.name | downcase
+    if option_name == 'size'
+      assign size_values = product_option.values | join: ' ' | downcase
+      break
+    endif
+  endfor
+  assign has_sizes = true
+  if size_values == '' or size_values contains 'one size'
+    assign has_sizes = false
+  endif
 -%}
 
 <div
@@ -73,7 +89,11 @@
       </details>
     {%- endif -%}
 
-    <details class="pinfo__row">
+    {%- if has_sizes -%}
+    <details
+      id="SizeGuideTarget-{{ product_resource.id }}"
+      class="pinfo__row"
+    >
       <summary class="pinfo__summary">
         <svg class="pinfo__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
           <path d="M3.2 15.3 15.3 3.2a1 1 0 0 1 1.4 0l4.1 4.1a1 1 0 0 1 0 1.4L8.7 20.8a1 1 0 0 1-1.4 0l-4.1-4.1a1 1 0 0 1 0-1.4Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
@@ -144,6 +164,7 @@
         {%- endif -%}
       </div>
     </details>
+    {%- endif -%}
 
     {%- if bs.shipping_text != blank -%}
       <details class="pinfo__row">
@@ -550,7 +571,7 @@
       "id": "shipping_text",
       "label": "Shipping text",
       "info": "Same on every product. Set your real delivery window here.",
-      "default": "<p>Free shipping on all orders, delivered in 2–4 business days. You have 30 days to return your order with free returns. Your legal right of withdrawal remains guaranteed.</p>"
+      "default": "<p>Free shipping on all orders, delivered in [X–Y] business days. You have 30 days to return your order with free returns. Your legal right of withdrawal remains guaranteed.</p>"
     },
     {
       "type": "header",

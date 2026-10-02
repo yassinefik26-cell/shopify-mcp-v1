@@ -7,7 +7,7 @@
 
 {% unless product_resource == blank %}
   {% render 'variant-main-picker', product_resource: product_resource, section: section, product: product %}
-  {% render 'size-guide-link', product_resource: product_resource %}
+  {% render 'size-guide-jump', product_resource: product_resource %}
 {% endunless %}
 
 {% schema %}
