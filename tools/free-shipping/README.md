@@ -1,6 +1,6 @@
 # Free shipping — delivery rates zeroed
 
-The cart now states "Livraison gratuite sur toutes les commandes." The rates were
+The cart now states "Free shipping on all orders." The rates were
 set to zero so that statement is true.
 
 ## Before

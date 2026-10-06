@@ -1,7 +1,7 @@
-# Cart shipping message — "Livraison gratuite sur toutes les commandes."
+# Cart shipping message — "Free shipping on all orders."
 
 Replaces the stock Horizon tax/duties/shipping note under the cart total with a
-flat free-shipping statement, in French and English.
+flat free-shipping statement.
 
 ## What the cart used to say
 
@@ -53,10 +53,19 @@ currently unreferenced), so the phrasing cannot resurface:
     taxes_included_shipping_at_checkout_with_policy_without_discounts_html
     taxes_included_shipping_at_checkout_without_policy_without_discounts
 
-New values:
+New value, in BOTH files:
 
-    locales/fr.json          Livraison gratuite sur toutes les commandes.
-    locales/en.default.json  Free shipping on all orders.
+    Free shipping on all orders.
+
+The merchant asked for the shopper-facing text in English. `fr` is the store's
+only published locale (and its primary one), so `locales/fr.json` is the file the
+storefront actually serves — the English string has to live there for English to
+appear. `locales/en.default.json` carries the same string as the fallback and for
+if an English locale is published later.
+
+Only these 21 values are in English; the other 283 keys in `fr.json` remain
+French. The file is a French locale file holding one English string by intent,
+not by mistake — do not "fix" it back.
 
 The `_html` keys previously interpolated `{{ link }}` (the shipping-policy URL).
 The new value takes no argument; the now-unused `t: link:` argument in
@@ -70,7 +79,7 @@ countries including the EU, where indicating whether tax is included in the
 displayed price is a legal requirement. If that disclosure needs to come back,
 use a combined value rather than restoring the old string, e.g.
 
-    Taxes incluses. Livraison gratuite sur toutes les commandes.
+    Taxes included. Free shipping on all orders.
 
 ## Shipping rates
 
@@ -90,7 +99,7 @@ bytes, never by retyping:
 
 | file | bytes | md5 |
 |---|---|---|
-| `locales/fr.json` | 17811 | `77ffbe12b367e1f3a260ccc9add5381f` |
+| `locales/fr.json` | 17475 | `46cd8d946efa50c6fab3b00d3624a38f` |
 | `locales/en.default.json` | 16752 | `7a2158e9a4a7c3a3957f0831990ad015` |
 
 Originals, for reference:
