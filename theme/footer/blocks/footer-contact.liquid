@@ -1,0 +1,188 @@
+{%- liquid
+  assign s = block.settings
+
+  # The tel: href is derived from what the merchant types, so the number lives
+  # in exactly one editable field. Liquid has no regex replace, so the
+  # separators are stripped one filter at a time.
+  assign tel_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.'
+-%}
+
+<div
+  class="footer-contact"
+  style="{% render 'spacing-style', settings: block.settings %}"
+  {{ block.shopify_attributes }}
+>
+  {%- if s.company_name != blank -%}
+    <p class="footer-contact__row"><strong>Company name:</strong> {{ s.company_name }}</p>
+  {%- endif -%}
+
+  {%- if s.address != blank -%}
+    <p class="footer-contact__row">
+      <strong>Business Address:</strong> {{ s.address | escape | newline_to_br }}
+    </p>
+  {%- endif -%}
+
+  {%- if s.email != blank -%}
+    <p class="footer-contact__row">
+      <strong>Email:</strong>
+      <a href="mailto:{{ s.email | escape }}">{{ s.email }}</a>
+    </p>
+  {%- endif -%}
+
+  {%- if s.phone != blank -%}
+    <p class="footer-contact__row">
+      <strong>Phone:</strong>
+      <a href="tel:{{ tel_href | escape }}">{{ s.phone }}</a>
+    </p>
+  {%- endif -%}
+
+  {%- if s.support_days != blank -%}
+    <p class="footer-contact__row footer-contact__row--tight">
+      Customer Support: {{ s.support_days }}{% if s.timezone != blank %} ({{ s.timezone }}){% endif %}
+    </p>
+  {%- endif -%}
+
+  {%- if s.response_time != blank -%}
+    <p class="footer-contact__row footer-contact__row--tight">Response time: {{ s.response_time }}</p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .footer-contact__row {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* The support/response lines read as one block in the reference, so they sit
+     closer together than the labelled rows above them. */
+  .footer-contact__row--tight + .footer-contact__row--tight {
+    margin-block-start: -0.55rem;
+  }
+
+  .footer-contact a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+    transition: text-decoration-color var(--animation-speed, 0.15s) ease;
+  }
+
+  .footer-contact a:hover {
+    text-decoration-color: currentColor;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact details",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Fill in your business details. The email and phone values below are turned into real clickable links automatically — you never need to edit code."
+    },
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Company name",
+      "default": "DRIPHOPE LLC"
+    },
+    {
+      "type": "textarea",
+      "id": "address",
+      "label": "Business address",
+      "info": "Press Enter for a line break; each line renders on its own row.",
+      "default": "301 East E Street, Casper, WY 82601"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email",
+      "info": "Rendered as a mailto: link.",
+      "default": "contact@driphope.com"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone",
+      "info": "Type it however you want it to read. The tel: link strips spaces, brackets and dashes on its own.",
+      "default": "+1 (914) 436-2237"
+    },
+    {
+      "type": "text",
+      "id": "support_days",
+      "label": "Customer support days",
+      "default": "Monday – Friday"
+    },
+    {
+      "type": "text",
+      "id": "timezone",
+      "label": "Time zone",
+      "info": "Shown in brackets after the support days. Prefer ET / CT / MT / PT over EST / PST, which name only the winter half of the year.",
+      "default": "MT"
+    },
+    {
+      "type": "text",
+      "id": "response_time",
+      "label": "Response time",
+      "default": "24–48 business hours"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact details",
+      "category": "Footer"
+    }
+  ]
+}
+{% endschema %}
