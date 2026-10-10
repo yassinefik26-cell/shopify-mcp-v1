@@ -10,7 +10,7 @@ duplicate the merchant publishes themselves.
 | file | bytes | md5 |
 |---|---|---|
 | `blocks/footer-contact.liquid` | 5232 | `2f7c11b38a6fcc09a27c29344635f180` |
-| `sections/footer-group.json` | 12638 | `08fe41c6c93cebccd949933d37af5eb7` |
+| `sections/footer-group.json` | 13555 | `efc9d2094299076fb78603fa4cbe6f80` |
 
 ## Column 1 — "Our policies"
 
@@ -79,8 +79,9 @@ file now contains zero backslashes; keep it that way.
 
 ## Column 3 — "Join Our Journey"
 
-Heading, a blurb, and the theme's native `email-signup` block, carried over with
-its existing settings (red `#e3242b` button, pill radius).
+Heading, a blurb, the theme's native `email-signup` block carried over with its
+existing settings (red `#e3242b` button, pill radius), and the social links
+block beneath it.
 
 The store has **no Klaviyo**. Installed apps are Messaging, POKY, Track123,
 Simprosys Google Shopping Feed and the Claude connectors. The signup is
@@ -90,15 +91,21 @@ used too.
 The blurb is original copy, not the reference image's wording — that text
 belongs to another store.
 
+## Social links
+
+`social_links_driphope` sits last in column 3, which is where it lived in the
+previous footer (inside the newsletter group). Its settings were copied from the
+live theme verbatim, so the four live URLs are unchanged:
+
+    instagram  https://www.instagram.com/driphope2320/
+    youtube    https://www.youtube.com/channel/UCHLncrEJyQUNOcEGsOI18nA
+    tiktok     https://www.tiktok.com/@driphope0
+    pinterest  https://www.pinterest.com/Driphope13/_profile/
+
 ## What the rebuild dropped
 
-The previous footer's `social_links_driphope` block (Instagram, YouTube, TikTok,
-Pinterest) is **not** in the three-column spec and is gone from this layout. The
-URLs are preserved in git history here and in the live theme until it is
-replaced. Re-adding it is one block.
-
-The standalone `text_phone_driphope` block from the previous change is also
-gone; the phone now lives in the contact block's Phone row instead.
+The standalone `text_phone_driphope` block from the previous change is gone; the
+phone now lives in the contact block's Phone row instead.
 
 ## Styling notes
 

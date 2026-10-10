@@ -305,12 +305,34 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "social_links_driphope": {
+              "type": "social-links",
+              "name": "t:names.social_media_links",
+              "settings": {
+                "icon_color": "",
+                "facebook_url": "",
+                "instagram_url": "https://www.instagram.com/driphope2320/",
+                "youtube_url": "https://www.youtube.com/channel/UCHLncrEJyQUNOcEGsOI18nA",
+                "tiktok_url": "https://www.tiktok.com/@driphope0",
+                "twitter_url": "",
+                "threads_url": "",
+                "linkedin_url": "",
+                "bluesky_url": "",
+                "snapchat_url": "",
+                "pinterest_url": "https://www.pinterest.com/Driphope13/_profile/",
+                "tumblr_url": "",
+                "vimeo_url": "",
+                "custom_url": ""
+              },
+              "blocks": {}
             }
           },
           "block_order": [
             "text_journey_heading",
             "text_journey_blurb",
-            "email-signup_journey"
+            "email-signup_journey",
+            "social_links_driphope"
           ]
         }
       },
