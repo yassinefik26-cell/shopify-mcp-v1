@@ -9,7 +9,7 @@ duplicate the merchant publishes themselves.
 
 | file | bytes | md5 |
 |---|---|---|
-| `blocks/footer-contact.liquid` | 5232 | `2f7c11b38a6fcc09a27c29344635f180` |
+| `blocks/footer-contact.liquid` | 4550 | `829d8ea35f622af60a8a7ac4b2d46689` |
 | `sections/footer-group.json` | 13555 | `efc9d2094299076fb78603fa4cbe6f80` |
 
 ## Column 1 — "Our policies"
@@ -49,17 +49,21 @@ field per value. The merchant never edits code to change a number:
 | setting | default |
 |---|---|
 | `company_name` | DRIPHOPE LLC |
-| `address` | placeholder |
-| `email` | placeholder |
+| `address` | 301 East E Street, Casper, WY 82601 |
+| `email` | contact@driphope.com |
 | `phone` | +1 (914) 436-2237 |
-| `whatsapp` | placeholder |
 | `support_days` | Monday – Friday |
 | `response_time` | 24–48 business hours |
 
-The `tel:` and `wa.me` hrefs are DERIVED from what is typed, so a number lives
-in exactly one field. Liquid has no regex replace, so separators are stripped
-one filter at a time; `wa.me` additionally rejects a leading `+`, hence the
-extra `remove`.
+There is deliberately no WhatsApp row: the merchant removed it.
+
+The `tel:` href is DERIVED from what is typed, so the number lives in exactly
+one field. Liquid has no regex replace, so separators are stripped one filter
+at a time.
+
+The address default is a single line because a schema default cannot safely
+carry a `\n` (see below). The field is a textarea, so pressing Enter in the
+theme editor splits it across rows.
 
 Every row is wrapped in `{% if ... != blank %}`, so an empty field drops its
 row rather than leaving a dangling label.

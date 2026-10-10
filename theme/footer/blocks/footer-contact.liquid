@@ -1,12 +1,10 @@
 {%- liquid
   assign s = block.settings
 
-  # The tel: and wa.me hrefs are derived from what the merchant types, so the
-  # number lives in exactly one editable field. Liquid has no regex replace,
-  # so the separators are stripped one at a time. wa.me additionally rejects
-  # a leading "+", hence the extra removal.
+  # The tel: href is derived from what the merchant types, so the number lives
+  # in exactly one editable field. Liquid has no regex replace, so the
+  # separators are stripped one filter at a time.
   assign tel_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.'
-  assign wa_href = s.whatsapp | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.' | remove: '+'
 -%}
 
 <div
@@ -35,17 +33,6 @@
     <p class="footer-contact__row">
       <strong>Phone:</strong>
       <a href="tel:{{ tel_href | escape }}">{{ s.phone }}</a>
-    </p>
-  {%- endif -%}
-
-  {%- if s.whatsapp != blank -%}
-    <p class="footer-contact__row">
-      <strong>WhatsApp</strong> (Fast response):
-      <a
-        href="https://wa.me/{{ wa_href | escape }}"
-        target="_blank"
-        rel="noopener"
-      >{{ s.whatsapp }}</a>
     </p>
   {%- endif -%}
 
@@ -96,7 +83,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Fill in your business details. The email, phone and WhatsApp values below are turned into real clickable links automatically — you never need to edit code."
+      "content": "Fill in your business details. The email and phone values below are turned into real clickable links automatically — you never need to edit code."
     },
     {
       "type": "text",
@@ -109,14 +96,14 @@
       "id": "address",
       "label": "Business address",
       "info": "Press Enter for a line break; each line renders on its own row.",
-      "default": "[Street address, suite — City, State ZIP, Country]"
+      "default": "301 East E Street, Casper, WY 82601"
     },
     {
       "type": "text",
       "id": "email",
       "label": "Email",
       "info": "Rendered as a mailto: link.",
-      "default": "[your@email.com]"
+      "default": "contact@driphope.com"
     },
     {
       "type": "text",
@@ -124,13 +111,6 @@
       "label": "Phone",
       "info": "Type it however you want it to read. The tel: link strips spaces, brackets and dashes on its own.",
       "default": "+1 (914) 436-2237"
-    },
-    {
-      "type": "text",
-      "id": "whatsapp",
-      "label": "WhatsApp number",
-      "info": "Include the country code. Links to wa.me.",
-      "default": "[+1 000 000 0000]"
     },
     {
       "type": "text",
