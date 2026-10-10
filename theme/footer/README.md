@@ -9,7 +9,7 @@ duplicate the merchant publishes themselves.
 
 | file | bytes | md5 |
 |---|---|---|
-| `blocks/footer-contact.liquid` | 4550 | `829d8ea35f622af60a8a7ac4b2d46689` |
+| `blocks/footer-contact.liquid` | 4874 | `9b5a39a510c05b89931891af0f04a7f5` |
 | `sections/footer-group.json` | 13555 | `efc9d2094299076fb78603fa4cbe6f80` |
 
 ## Column 1 — "Our policies"
@@ -53,7 +53,14 @@ field per value. The merchant never edits code to change a number:
 | `email` | contact@driphope.com |
 | `phone` | +1 (914) 436-2237 |
 | `support_days` | Monday – Friday |
+| `timezone` | ET |
 | `response_time` | 24–48 business hours |
+
+`timezone` renders in brackets after the support days and is skipped when
+blank. The default is a guess: the registered address is Casper, WY (Mountain)
+but the phone is a 914 area code (Eastern), so the two pieces of information
+the store already holds disagree. ET was chosen as the commoner default for US
+support hours — it is a one-word edit in the theme editor.
 
 There is deliberately no WhatsApp row: the merchant removed it.
 
