@@ -1,0 +1,74 @@
+{
+  "_comment": [
+    "Removed from templates/index.json on the draft theme at the user's request.",
+    "To restore: add the object below back under \"sections\" and put its key",
+    "into \"order\" where you want it (it was directly before inline_image_text_brand).",
+    "The sections/customer-reviews.liquid file itself was NOT deleted from the theme."
+  ],
+  "customer_reviews_main": {
+    "type": "customer-reviews",
+    "blocks": {
+      "review_1": {
+        "type": "customer-review",
+        "settings": {
+          "headline": "Elevated streetwear",
+          "quote": "The fit is exactly what I wanted — heavyweight, boxy, and the pigment dye looks better every wash.",
+          "image": "shopify://shop_images/pexels-aleksmagnusson-15127181.jpg",
+          "avatar": "shopify://shop_images/casual-urban-menswear.jpg",
+          "name": "Tyler H.",
+          "location": "New York,NY",
+          "product": "8-ball-pig-dyed-hood",
+          "product_title": ""
+        },
+        "blocks": {}
+      },
+      "review_2": {
+        "type": "customer-review",
+        "settings": {
+          "headline": "Everyday comfort",
+          "quote": "Shipping was quick and the quality is way above what I expected at this price. Already ordered a second one.",
+          "image": "shopify://shop_images/pexels-lucas-brown-368306455-15965791.jpg",
+          "avatar": "shopify://shop_images/woman-in-sports-clothes-stands-on-a-beach-in-the-morning-light.jpg",
+          "name": "Ashley M.",
+          "location": "Brooklyn, NY",
+          "product": "bear-with-me-hoodie-black",
+          "product_title": ""
+        },
+        "blocks": {}
+      },
+      "review_3": {
+        "type": "customer-review",
+        "settings": {
+          "headline": "Built to last",
+          "quote": "This jacket goes with everything. Solid hardware, clean stitching — it feels like a much more expensive piece.",
+          "image": "shopify://shop_images/pexels-eddson-lens-748406628-29660402.jpg",
+          "avatar": "shopify://shop_images/black-and-white-portrait-mens-fashion.jpg",
+          "name": "Ryan  K.",
+          "location": "Los Angles, CA",
+          "product": "field-jacket-1",
+          "product_title": ""
+        },
+        "blocks": {}
+      }
+    },
+    "block_order": [
+      "review_1",
+      "review_2",
+      "review_3"
+    ],
+    "name": "Customer reviews",
+    "settings": {
+      "heading": "Customer reviews",
+      "columns": 1,
+      "mobile_columns": "1",
+      "gap": 40,
+      "corner_radius": 120,
+      "icons_style": "arrow",
+      "icons_shape": "circle",
+      "section_width": "page-width",
+      "background_color": "",
+      "padding-block-start": 56,
+      "padding-block-end": 56
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{%- doc -%}
+  Renders a small "Size guide" link under the size selector that jumps to the
+  Fit & sizes row of the product info block and opens it.
+
+  Falls back to a plain anchor jump when JavaScript does not run, and renders
+  nothing on products the size chart would not apply to, so it stays in step
+  with the row it points at.
+
+  @param {object} product_resource - The product object.
+
+  @example
+  {% render 'size-guide-jump', product_resource: product_resource %}
+{%- enddoc -%}
+
+{%- liquid
+  assign size_values = ''
+  for product_option in product_resource.options_with_values
+    assign option_name = product_option.name | downcase
+    if option_name == 'size'
+      assign size_values = product_option.values | join: ' ' | downcase
+      break
+    endif
+  endfor
+
+  assign has_sizes = true
+  if size_values == '' or size_values contains 'one size'
+    assign has_sizes = false
+  endif
+-%}
+
+{%- if has_sizes -%}
+  <a
+    class="size-guide-jump"
+    href="#SizeGuideTarget-{{ product_resource.id }}"
+    data-size-guide-jump
+  >
+    <svg
+      class="size-guide-jump__icon"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M2.5 7.25h15v5.5h-15z"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M6 7.25v2.5M10 7.25v3.25M14 7.25v2.5"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-linecap="round"
+      />
+    </svg>
+    <span>Size guide</span>
+  </a>
+
+  <script>
+    (() => {
+      document.querySelectorAll('[data-size-guide-jump]:not([data-jump-bound])').forEach((link) => {
+        link.setAttribute('data-jump-bound', '');
+        link.addEventListener('click', (event) => {
+          const target = document.getElementById(link.getAttribute('href').slice(1));
+          // No target on the page: leave the browser's own anchor jump alone.
+          if (!target) return;
+          event.preventDefault();
+          target.open = true;
+          const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+          // Move focus so keyboard and screen reader users land on the row too.
+          const summary = target.querySelector('summary');
+          if (summary) summary.focus({ preventScroll: true });
+        });
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% stylesheet %}
+  .size-guide-jump {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: 0.75rem;
+    color: inherit;
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+    opacity: 0.8;
+  }
+
+  .size-guide-jump:hover,
+  .size-guide-jump:focus-visible {
+    opacity: 1;
+  }
+
+  .size-guide-jump__icon {
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+{% endstylesheet %}
