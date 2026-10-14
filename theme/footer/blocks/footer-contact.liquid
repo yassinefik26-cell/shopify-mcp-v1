@@ -1,10 +1,14 @@
 {%- liquid
   assign s = block.settings
 
-  # The tel: href is derived from what the merchant types, so the number lives
-  # in exactly one editable field. Liquid has no regex replace, so the
-  # separators are stripped one filter at a time.
+  # The tel: and maps hrefs are derived from what the merchant types, so each
+  # value lives in exactly one editable field. Liquid has no regex replace, so
+  # the phone separators are stripped one filter at a time.
   assign tel_href = s.phone | remove: ' ' | remove: '(' | remove: ')' | remove: '-' | remove: '.'
+
+  # A multi-line address would url_encode its newlines to %0A, which Maps reads
+  # poorly, so the line breaks become ", " before encoding.
+  assign address_query = s.address | newline_to_br | replace: '<br />', ', ' | url_encode
 -%}
 
 <div
@@ -18,7 +22,12 @@
 
   {%- if s.address != blank -%}
     <p class="footer-contact__row">
-      <strong>Business Address:</strong> {{ s.address | escape | newline_to_br }}
+      <strong>Business Address:</strong>
+      <a
+        href="https://www.google.com/maps/search/?api=1&amp;query={{ address_query }}"
+        target="_blank"
+        rel="noopener"
+      >{{ s.address | escape | newline_to_br }}</a>
     </p>
   {%- endif -%}
 
@@ -85,7 +94,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Fill in your business details. The email and phone values below are turned into real clickable links automatically — you never need to edit code."
+      "content": "Fill in your business details. The address, email and phone values below are turned into real clickable links automatically — you never need to edit code."
     },
     {
       "type": "text",
@@ -97,7 +106,7 @@
       "type": "textarea",
       "id": "address",
       "label": "Business address",
-      "info": "Press Enter for a line break; each line renders on its own row.",
+      "info": "Press Enter for a line break. Links to Google Maps for whatever is typed here.",
       "default": "301 East E Street, Casper, WY 82601"
     },
     {

@@ -9,7 +9,7 @@ duplicate the merchant publishes themselves.
 
 | file | bytes | md5 |
 |---|---|---|
-| `blocks/footer-contact.liquid` | 4874 | `02d936022003441a77389c15fdac7a18` |
+| `blocks/footer-contact.liquid` | 5300 | `85dd1e22faa27ff1f515cd4fcb961fc6` |
 | `sections/footer-group.json` | 13555 | `efc9d2094299076fb78603fa4cbe6f80` |
 
 ## Column 1 — "Our policies"
@@ -68,9 +68,17 @@ shop-level ones are `shopLocaleUpdate`, `shopPolicyUpdate`,
 
 There is deliberately no WhatsApp row: the merchant removed it.
 
-The `tel:` href is DERIVED from what is typed, so the number lives in exactly
-one field. Liquid has no regex replace, so separators are stripped one filter
-at a time.
+The `tel:`, `mailto:` and Google Maps hrefs are all DERIVED from what is typed,
+so each value lives in exactly one field. Liquid has no regex replace, so the
+phone separators are stripped one filter at a time.
+
+The address links to `google.com/maps/search/?api=1&query=<url-encoded>`. A
+multi-line address would url_encode its newlines to `%0A`, which Maps reads
+poorly, so the line breaks are turned into `", "` first:
+
+    s.address | newline_to_br | replace: '<br />', ', ' | url_encode
+
+The `&` in that href is written `&amp;` so the markup stays valid HTML.
 
 The address default is a single line because a schema default cannot safely
 carry a `\n` (see below). The field is a textarea, so pressing Enter in the
